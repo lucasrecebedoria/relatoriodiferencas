@@ -2,61 +2,20 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Relatório de Diferenças</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+  <title>Login - MOVE BUSS</title>
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="app.js"></script>
 </head>
-<body>
-  <header>
-    <img src="MOVE_BUSS_LOGO02.png" alt="Logo" class="logo">
-    <h1>Relatório de Diferenças</h1>
-    <div class="top-buttons">
-      <button id="btnResumoRecebedor" style="display:none;" class="admin-only">Resumo do Recebedor</button>
-      <button id="btnAlterarSenha" style="display:none;">Alterar Senha</button>
-      <button id="btnLogout" style="display:none;">Logout</button>
-    </div>
-  </header>
-
-  <main id="app">
-    <div id="login-container">
-      <h2>Login</h2>
-      <input type="text" id="matricula" placeholder="Matrícula">
-      <input type="password" id="senha" placeholder="Senha">
-      <button id="btnLogin">Entrar</button>
-      <button id="btnShowCadastro">Cadastrar Usuário</button>
-
-      <div id="cadastro-container" style="display:none;">
-        <h3>Cadastrar Novo Usuário</h3>
-        <input type="text" id="novaMatricula" placeholder="Matrícula">
-        <input type="text" id="novoNome" placeholder="Nome">
-        <input type="password" id="novaSenha" placeholder="Senha">
-        <button id="btnCadastrar">Cadastrar</button>
-      </div>
-    </div>
-
-    <div id="relatorios-container" style="display:none;">
-      <h2>Relatórios</h2>
-      <div id="gerar-relatorio" class="admin-only">
-        <h3>Novo Relatório</h3>
-        <input type="date" id="dataCaixa">
-        <input type="number" id="valorFolha" placeholder="Valor Folha (R$)">
-        <input type="number" id="valorDinheiro" placeholder="Valor Dinheiro (R$)">
-        <input type="text" id="observacao" placeholder="Observação">
-        <button id="btnSalvarRelatorio">Salvar</button>
-      </div>
-
-      <div id="lista-relatorios"></div>
-    </div>
-  </main>
-
-  <footer>
-    <p>(desenvolvido por Lucas L Custodio, versão 1.0)</p>
-  </footer>
-
-  <script src="main.js"></script>
+<body class="login-page">
+  <div class="container">
+    <h1>Login</h1>
+    <form id="loginForm">
+      <input type="text" id="matricula" placeholder="Matrícula" required><br>
+      <input type="password" id="senha" placeholder="Senha" required><br>
+      <button type="submit">Entrar</button>
+    </form>
+    <p>Ainda não tem conta?</p>
+    <button onclick="window.location.href='register.html'">Cadastrar novo usuário</button>
+  </div>
 </body>
 </html>

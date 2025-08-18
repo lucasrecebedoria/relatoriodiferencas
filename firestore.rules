@@ -1,0 +1,14 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /relatorios/{document} {
+      allow read: if request.auth != null;
+      allow create, update, delete: if request.auth.token.admin == true;
+    }
+    match /usuarios/{userId} {
+      allow read: if request.auth != null;
+      allow create: if true; // todos podem se cadastrar
+      allow update, delete: if request.auth.uid == userId;
+    }
+  }
+}
