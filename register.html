@@ -2,20 +2,42 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Cadastro - MOVE BUSS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cadastro | Relatório de Diferenças</title>
   <link rel="stylesheet" href="styles.css">
-  <script defer src="app.js"></script>
+  <script type="module" src="app.js" defer></script>
 </head>
-<body class="register-page">
-  <div class="container">
-    <h1>Cadastrar Usuário</h1>
-    <form id="registerForm">
-      <input type="text" id="regMatricula" placeholder="Matrícula" required><br>
-      <input type="text" id="regNome" placeholder="Nome" required><br>
-      <input type="password" id="regSenha" placeholder="Senha" required><br>
-      <button type="submit">Cadastrar</button>
-    </form>
-    <button onclick="window.location.href='index.html'">Voltar para Login</button>
+<body class="auth-bg">
+  <div class="auth-wrapper">
+    <div class="auth-card">
+      <div class="brand-row">
+        <img src="assets/logo.png" alt="Logo" class="auth-logo">
+        <h1>Novo Usuário</h1>
+      </div>
+      <div class="form-group">
+        <label>Matrícula</label>
+        <div class="input-icon">
+          <span>🆔</span>
+          <input id="cadMatricula" placeholder="Ex: 1234">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Nome</label>
+        <div class="input-icon">
+          <span>👤</span>
+          <input id="cadNome" placeholder="Nome completo">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Senha</label>
+        <div class="input-icon">
+          <span>🔒</span>
+          <input id="cadSenha" type="password" placeholder="Crie uma senha">
+        </div>
+      </div>
+      <button id="btnCadastrar" class="btn primary w-100">Cadastrar</button>
+      <button class="btn text w-100" onclick="location.href='index.html'">Voltar ao Login</button>
+    </div>
   </div>
 </body>
 </html>
