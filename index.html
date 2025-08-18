@@ -1,189 +1,62 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Relatório de Diferenças</title>
-  <link rel="icon" href="assets/logo.png">
-  <link rel="stylesheet" href="styles.css" />
-  <script defer type="module" src="app.js"></script>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
 </head>
 <body>
-  <header class="topbar">
-    <div class="brand">
-      <img src="assets/logo.png" alt="Move Buss" />
-      <h1>Relatório de Diferenças</h1>
-    </div>
-    <div class="session-actions">
-      <button id="btnChangePassword" class="btn metal hidden" title="Alterar senha">Alterar Senha</button>
-      <button id="btnLogout" class="btn metal danger hidden" title="Sair">Sair</button>
+  <header>
+    <img src="MOVE_BUSS_LOGO02.png" alt="Logo" class="logo">
+    <h1>Relatório de Diferenças</h1>
+    <div class="top-buttons">
+      <button id="btnResumoRecebedor" style="display:none;" class="admin-only">Resumo do Recebedor</button>
+      <button id="btnAlterarSenha" style="display:none;">Alterar Senha</button>
+      <button id="btnLogout" style="display:none;">Logout</button>
     </div>
   </header>
 
-  <main id="app" class="container">
-    <!-- LOGIN / REGISTRO -->
-    <section id="authSection" class="card">
-      <div class="auth-grid">
-        <div>
-          <h2>Entrar</h2>
-          <label>Matrícula</label>
-          <input id="loginMatricula" class="input" placeholder="Ex.: 6266" inputmode="numeric">
-          <label>Senha</label>
-          <input id="loginSenha" class="input" type="password" placeholder="••••••••">
-          <button id="btnLogin" class="btn metal full">Entrar</button>
-          <div class="hint muted">Seu e-mail é gerado automaticamente: <code>matricula@movebuss.local</code></div>
-        </div>
-        <div class="divider"></div>
-        <div>
-          <h2>Cadastrar usuário</h2>
-          <label>Matrícula</label>
-          <input id="cadMatricula" class="input" placeholder="Ex.: 70029" inputmode="numeric">
-          <label>Nome</label>
-          <input id="cadNome" class="input" placeholder="Nome completo">
-          <label>Senha</label>
-          <input id="cadSenha" class="input" type="password" placeholder="Defina uma senha">
-          <button id="btnCadastrar" class="btn metal full">Cadastrar</button>
-          <div class="hint muted">O e-mail será <code>matricula@movebuss.local</code> e ficará oculto no sistema.</div>
-        </div>
+  <main id="app">
+    <div id="login-container">
+      <h2>Login</h2>
+      <input type="text" id="matricula" placeholder="Matrícula">
+      <input type="password" id="senha" placeholder="Senha">
+      <button id="btnLogin">Entrar</button>
+      <button id="btnShowCadastro">Cadastrar Usuário</button>
+
+      <div id="cadastro-container" style="display:none;">
+        <h3>Cadastrar Novo Usuário</h3>
+        <input type="text" id="novaMatricula" placeholder="Matrícula">
+        <input type="text" id="novoNome" placeholder="Nome">
+        <input type="password" id="novaSenha" placeholder="Senha">
+        <button id="btnCadastrar">Cadastrar</button>
       </div>
-    </section>
+    </div>
 
-    <!-- DASHBOARD -->
-    <section id="dashboard" class="hidden">
-      <div id="welcome" class="welcome"></div>
-
-      <!-- Barra de filtros/seleção -->
-      <div id="adminControls" class="controls hidden">
-        <div class="row">
-          <div class="col">
-            <label>Filtrar por matrícula</label>
-            <input id="filtroMatricula" class="input" placeholder="Ex.: 6266" inputmode="numeric">
-          </div>
-          <div class="col">
-            <label>Dia específico</label>
-            <input id="filtroData" class="input" type="date">
-          </div>
-          <div class="col">
-            <label>Mês</label>
-            <input id="filtroMes" class="input" type="month">
-          </div>
-          <div class="col">
-            <label>&nbsp;</label>
-            <button id="btnAplicarFiltros" class="btn metal full">Aplicar filtros</button>
-          </div>
-        </div>
+    <div id="relatorios-container" style="display:none;">
+      <h2>Relatórios</h2>
+      <div id="gerar-relatorio" class="admin-only">
+        <h3>Novo Relatório</h3>
+        <input type="date" id="dataCaixa">
+        <input type="number" id="valorFolha" placeholder="Valor Folha (R$)">
+        <input type="number" id="valorDinheiro" placeholder="Valor Dinheiro (R$)">
+        <input type="text" id="observacao" placeholder="Observação">
+        <button id="btnSalvarRelatorio">Salvar</button>
       </div>
 
-      <!-- Layout superior: resumo à esquerda, geração à direita -->
-      <div class="row top-split">
-        <div class="col">
-          <div id="resumoRecebedorWrapper" class="card hidden">
-            <div class="row space-between">
-              <h3>Resumo do Recebedor</h3>
-              <button id="btnToggleResumo" class="btn metal small">Esconder/Exibir</button>
-            </div>
-            <div id="resumoRecebedor" class="hidden">
-              <div class="row">
-                <div class="col">
-                  <label>Matrícula selecionada</label>
-                  <div id="resumoMatricula" class="badge"></div>
-                </div>
-                <div class="col">
-                  <label>Mês/Ano</label>
-                  <input id="resumoMes" class="input" type="month">
-                </div>
-                <div class="col">
-                  <label>&nbsp;</label>
-                  <button id="btnAtualizarResumo" class="btn metal full">Atualizar</button>
-                </div>
-              </div>
-              <div class="grid2">
-                <div class="stat">
-                  <div class="stat-label">Valor geral recebido (Folha)</div>
-                  <div id="resumoTotalFolha" class="stat-value">$ 0,00</div>
-                </div>
-                <div class="stat">
-                  <div class="stat-label">Saldo do mês (Dinheiro - Folha)</div>
-                  <div id="resumoSaldoMes" class="stat-value">$ 0,00</div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col">
-                  <label>Mostrar</label>
-                  <select id="resumoFiltroTipo" class="input">
-                    <option value="todos">Todos</option>
-                    <option value="positivos">Somente sobras</option>
-                    <option value="negativos">Somente faltas</option>
-                  </select>
-                </div>
-              </div>
-              <div id="resumoLista" class="table"></div>
-            </div>
-          </div>
-        </div>
-        <div class="col">
-          <div id="geracaoRelatorio" class="card hidden">
-            <h3>Gerar relatório</h3>
-            <div class="grid2">
-              <div>
-                <label>Data do caixa</label>
-                <input id="dataCaixa" class="input" type="date">
-              </div>
-              <div>
-                <label>Matrícula</label>
-                <input id="matriculaRel" class="input" placeholder="Ex.: 6266" inputmode="numeric">
-              </div>
-              <div>
-                <label>Valor Folha (R$)</label>
-                <input id="valorFolha" class="input money" inputmode="decimal" placeholder="R$ 0,00">
-              </div>
-              <div>
-                <label>Valor em Dinheiro (R$)</label>
-                <input id="valorDinheiro" class="input money" inputmode="decimal" placeholder="R$ 0,00">
-              </div>
-              <div>
-                <label>Sobra/Falta (R$)</label>
-                <input id="sobraFalta" class="input money" inputmode="decimal" placeholder="R$ 0,00" readonly>
-              </div>
-            </div>
-            <label>Observação</label>
-            <textarea id="observacao" class="input" rows="3" placeholder="Observações"></textarea>
-            <button id="btnSalvarRelatorio" class="btn metal">Salvar</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Lista geral -->
-      <div id="listaRelatorios" class="card">
-        <div class="row space-between">
-          <h3>Relatórios</h3>
-          <small class="muted">* Clique em "Esconder/Exibir" para ver o conteúdo</small>
-        </div>
-        <div id="relatoriosContainer"></div>
-      </div>
-    </section>
+      <div id="lista-relatorios"></div>
+    </div>
   </main>
 
-  <footer class="footer">
-    desenvolvido por Lucas L Custodio, versão 1.0
+  <footer>
+    <p>(desenvolvido por Lucas L Custodio, versão 1.0)</p>
   </footer>
 
-  <!-- Modal Pós Conferência -->
-  <dialog id="modalPosConf" class="modal">
-    <form method="dialog" class="modal-content">
-      <h3>Pós conferência</h3>
-      <div id="posconfAviso" class="muted"></div>
-      <textarea id="posConfTexto" class="input" rows="6" placeholder="Apenas administradores podem editar."></textarea>
-      <div class="row">
-        <input id="posConfImagem" type="file" accept="image/*" class="hidden">
-        <button id="btnAnexarImagem" class="btn metal" type="button">Anexar imagem</button>
-        <button id="btnVerImagem" class="btn metal" type="button">Visualizar imagem anexada</button>
-        <button id="btnExcluirImagem" class="btn metal danger hidden" type="button">Excluir imagem</button>
-        <div class="grow"></div>
-        <button id="btnSalvarPosConf" class="btn metal" type="button">Salvar</button>
-        <button class="btn metal" value="close">Fechar</button>
-      </div>
-    </form>
-  </dialog>
+  <script src="main.js"></script>
 </body>
 </html>
