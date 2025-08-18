@@ -1,21 +1,16 @@
 rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
-    // Estrutura: posConferencia/{matricula}/{relatorioId}/{filename}
-    match /posConferencia/{matricula}/{relatorioId}/{filename} {
-      // Admin: pode tudo
-      allow read, write, delete: if request.auth != null && isAdmin();
-
-      // Usuário comum: pode LER somente se a pasta corresponder à própria matrícula
-      allow read: if request.auth != null && request.auth.token.email.split('@')[0] == matricula;
+    function isAdmin() {
+      return request.auth != null && 
+        get(/databases/(default)/documents/usuarios/$(request.auth.uid)).data.isAdmin == true;
     }
-  }
-
-  function isAdmin(){
-    return request.auth.token.email in [
-      "6266@movebuss.local",
-      "4144@movebuss.local",
-      "70029@movebuss.local"
-    ];
+    match /posConferencia/{matricula}/{relatorioId}/{filename} {
+      // Admin pode tudo
+      allow read, write, delete: if isAdmin();
+      // Usuário comum pode ler apenas imagens da sua matrícula
+      allow read: if request.auth != null &&
+        get(/databases/(default)/documents/usuarios/$(request.auth.uid)).data.matricula == matricula;
+    }
   }
 }

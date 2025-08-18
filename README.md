@@ -1,19 +1,35 @@
-# MoveBuss Relatórios
+# MoveBuss — Relatório de Diferenças (v16)
 
-## Instalação
-1. Instale Firebase CLI: `npm install -g firebase-tools`
-2. Faça login: `firebase login`
-3. Inicialize o projeto: `firebase init`
-4. Suba para hosting: `firebase deploy`
+## Como rodar
+1. Suba a pasta `public/` para um servidor estático ou GitHub Pages.
+2. Abra `public/login.html` para acessar.
+3. Faça cadastro (qualquer matrícula) e login.
+4. Matrículas **70029, 6266 e 4144** são administradores automaticamente.
 
-## Regras Firestore
+## Firebase usado
+- Firestore: coleções `usuarios` e `relatorios`
+- Storage: `posConferencia/{matricula}/{relatorioId}/{arquivo}`
+
+## Regras Firestore (recomendadas)
 ```
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    match /usuarios/{uid} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null &&
+        (request.resource.data.isAdmin == true); // apenas admins (marcados no app) criam/atualizam
+    }
+
     match /relatorios/{docId} {
-      allow create, update, delete: if request.auth != null && request.auth.token.matricula in ['70029','6266','4144'];
-      allow read: if request.auth != null && (request.auth.token.matricula in ['70029','6266','4144'] || request.auth.token.matricula == resource.data.matricula);
+      // Admin pode tudo (detectado via documento usuarios/{uid}.isAdmin == true)
+      allow create, update, delete, read: if request.auth != null &&
+        get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.isAdmin == true;
+
+      // Usuário comum pode LER quando o doc for da própria matrícula
+      allow read: if request.auth != null &&
+        resource.data.matricula == get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.matricula;
     }
   }
 }
