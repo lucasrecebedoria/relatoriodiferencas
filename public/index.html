@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MoveBuss - Relatórios</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>MoveBuss Relatórios</h1>
+    <button id="logoutBtn" style="display:none;">Sair</button>
+  </header>
+  <main id="app">
+    <section id="login-section">
+      <h2>Login</h2>
+      <input type="text" id="loginMatricula" placeholder="Matrícula">
+      <input type="password" id="loginSenha" placeholder="Senha">
+      <button id="loginBtn">Entrar</button>
+      <p><a href="#" id="showRegister">Cadastrar novo usuário</a></p>
+    </section>
+
+    <section id="register-section" style="display:none;">
+      <h2>Cadastrar Usuário</h2>
+      <input type="text" id="registerMatricula" placeholder="Matrícula">
+      <input type="text" id="registerNome" placeholder="Nome">
+      <input type="password" id="registerSenha" placeholder="Senha">
+      <button id="registerBtn">Cadastrar</button>
+      <p><a href="#" id="showLogin">Voltar ao login</a></p>
+    </section>
+
+    <section id="relatorios-section" style="display:none;">
+      <div class="relatorios-header">
+        <h2>Relatórios</h2>
+        <div id="gerar-relatorio-admin" style="display:none;">
+          <input type="date" id="dataCaixa">
+          <input type="number" id="valorFolha" placeholder="Valor Folha (R$)">
+          <input type="number" id="valorDinheiro" placeholder="Valor em Dinheiro (R$)">
+          <select id="matriculaSelect"></select>
+          <button id="gerarRelatorioBtn">Gerar Relatório</button>
+        </div>
+      </div>
+      <div id="resumo-recebedor" style="display:none;">
+        <h3>Resumo do Recebedor</h3>
+        <select id="resumoSelect"></select>
+        <div id="resumoInfo"></div>
+      </div>
+      <div id="listaRelatorios"></div>
+    </section>
+  </main>
+  <script src="/src/main.js"></script>
+</body>
+</html>
