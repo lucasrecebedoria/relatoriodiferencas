@@ -75,3 +75,13 @@ textarea{resize:vertical}
 .collapsed{display:none}
 .admin-only[hidden]{display:none!important}
 .user-only[hidden]{display:none!important}
+
+.texto-vermelho {
+  color: red;
+  font-weight: bold;
+}
+
+.texto-verde {
+  color: green;
+  font-weight: bold;
+}
