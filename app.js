@@ -242,10 +242,7 @@ async function carregarResumoAdmin(){
   const saldo = rows.reduce((acc,r)=> acc + ((r.valorDinheiro||0)-(r.valorFolha||0)), 0);
   el('resumoTotalFolha').textContent = BRL.format(totalFolha);
   el('resumoSaldo').textContent = BRL.format(saldo);
-  const resumoSituacao = el('resumoSituacao');
-resumoSituacao.textContent = saldo >= 0 ? "POSITIVO" : "NEGATIVO";
-resumoSituacao.classList.remove('texto-verde','texto-vermelho');
-resumoSituacao.classList.add(saldo >= 0 ? 'texto-verde' : 'texto-vermelho');
+  el('resumoSituacao').textContent = saldo>=0 ? "POSITIVO" : "NEGATIVO";
 
   const tipo = el('filtroPositivosNegativos').value;
   const filtrados = rows.filter(r=>{
@@ -262,7 +259,7 @@ resumoSituacao.classList.add(saldo >= 0 ? 'texto-verde' : 'texto-vermelho');
     div.innerHTML = `
       <div class="item-header">
         <div class="item-title">${formatDateBR(r.dataCaixa)} — Matrícula ${r.matricula}</div>
-        <span class="badge">${BRL.format(r.valorFolha||0)} | ${BRL.format(r.valorDinheiro||0)} | <strong class="${sf >= 0 ? 'texto-verde' : 'texto-vermelho'}">${BRL.format(sf)}</strong></span>
+        <span class="badge">${BRL.format(r.valorFolha||0)} | ${BRL.format(r.valorDinheiro||0)} | <strong>${BRL.format(sf)}</strong></span>
       </div>`;
     cont.appendChild(div);
   });
